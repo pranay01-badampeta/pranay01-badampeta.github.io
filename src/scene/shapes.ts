@@ -16,7 +16,7 @@ function rng(seed: number) {
 }
 const gauss = (r: () => number) => Math.sqrt(-2 * Math.log(r() + 1e-9)) * Math.cos(2 * Math.PI * r());
 
-export type Portrait = { positions: Shape; colors: Float32Array; count: number };
+export type Portrait = { positions: Shape; colors: Float32Array; count: number; halfWidth: number; halfHeight: number };
 
 /**
  * Turns the cut-out photo into points: each visible pixel becomes a particle with its colour.
@@ -58,7 +58,13 @@ export async function portraitFromImage(url: string, keep: number): Promise<Port
       col.push(R * 0.9 + 0.07, G * 0.9 + 0.07, B * 0.9 + 0.08);
     }
   }
-  return { positions: new Float32Array(pos), colors: new Float32Array(col), count: pos.length / 3 };
+  return {
+    positions: new Float32Array(pos),
+    colors: new Float32Array(col),
+    count: pos.length / 3,
+    halfWidth: (width / 2) * scale,
+    halfHeight: (height / 2) * scale,
+  };
 }
 
 /** A small neural network: layers of nodes, and particles flowing along the connections. */

@@ -10,6 +10,7 @@ export default function DataCanvas() {
   const [count, setCount] = useState(0);
   const [index, setIndex] = useState(0);
   const bar = useRef<HTMLDivElement>(null);
+  const photo = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     let centers: { c: number; s: number }[] = [];
@@ -53,7 +54,22 @@ export default function DataCanvas() {
     let dispose = () => {};
     let gone = false;
     import("../scene/createScene").then(({ createScene }) => {
-      if (!gone) dispose = createScene(host.current!, { getStage, onReady: ({ count }) => setCount(count), photo: "media/portrait-sample.png" });
+      if (gone) return;
+      dispose = createScene(host.current!, {
+        getStage,
+        onReady: ({ count }) => setCount(count),
+        // Every frame: lay the real photo exactly over the particle portrait (DOM only, no React render).
+        onFrame: ({ left, top, width, height, photo: amount }) => {
+          const img = photo.current;
+          if (!img) return;
+          img.style.opacity = amount.toFixed(3);
+          img.style.visibility = amount > 0.002 ? "visible" : "hidden";
+          img.style.transform = `translate(${left}px, ${top}px)`;
+          img.style.width = `${width}px`;
+          img.style.height = `${height}px`;
+        },
+        photo: "media/portrait-sample.png",
+      });
     });
     return () => {
       gone = true;
@@ -66,6 +82,15 @@ export default function DataCanvas() {
   return (
     <>
       <div ref={host} className="fixed inset-0 -z-10" aria-hidden="true" />
+      {/* The real photo, shown when the particles have formed the portrait (first and last page). */}
+      <img
+        ref={photo}
+        src="media/portrait-hd.webp"
+        alt="Pranay Badampeta"
+        width={1000}
+        height={926}
+        className="pointer-events-none fixed left-0 top-0 -z-[5] invisible opacity-0 will-change-transform [mask-image:linear-gradient(to_bottom,black_78%,transparent)]"
+      />
 
       {/* Model readout, bottom left */}
       <div data-ui className="pointer-events-none fixed bottom-4 left-4 z-30 hidden font-mono text-[11px] leading-relaxed text-muted sm:block md:bottom-6 md:left-6">

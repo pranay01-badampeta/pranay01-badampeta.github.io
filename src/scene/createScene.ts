@@ -14,6 +14,18 @@ const LAYOUT = {
   spin: [0, 1, 1, 0.25, 0.15, 1, 0],
 };
 
+// The photo sits at the average depth of the particle portrait (face forward, shoulders back).
+const PHOTO_DEPTH = 0.18;
+
+/** How much of the real photo shows: after the intro on the first page, and on the last page. */
+function photoAmount(stage: number, intro: number) {
+  const ease = (x: number) => {
+    const t = Math.min(1, Math.max(0, x));
+    return t * t * (3 - 2 * t);
+  };
+  return ease((intro - 0.8) / 0.2) * Math.max(1 - ease(stage / 0.35), ease((stage - 5.65) / 0.35));
+}
+
 const vertexShader = /* glsl */ `
   uniform float uStage;
   uniform float uIntro;
@@ -22,6 +34,7 @@ const vertexShader = /* glsl */ `
   uniform float uPR;
   uniform float uMotion;
   uniform float uMouseOn;
+  uniform float uPhoto;
   uniform vec3 uMouse;
   attribute vec3 aP1;
   attribute vec3 aP2;
@@ -74,7 +87,8 @@ const vertexShader = /* glsl */ `
     gl_PointSize = uSize * mix(0.55 + aRand.y * 0.9, 0.85 + aRand.y * 0.3, isYou) * uPR / -mv.z;
     vec3 pal = palette(fract(aRand.w + p.y * 0.12 + 0.5)) * (0.75 + aRand.y * 0.5);
     vColor = mix(pal, aColor, isYou);
-    vAlpha = mix(0.85, 1.0, isYou);
+    // While the real photo is on screen, the particle portrait fades to a faint sparkle around it.
+    vAlpha = mix(0.85, 1.0 - uPhoto * 0.92, isYou);
   }
 `;
 
@@ -89,10 +103,17 @@ const fragmentShader = /* glsl */ `
 `;
 
 export type SceneInfo = { count: number };
+/** Where the portrait is on screen (CSS pixels) and how much the real photo should show (0–1). */
+export type PortraitFrame = { left: number; top: number; width: number; height: number; photo: number };
 
 export function createScene(
   host: HTMLElement,
-  opts: { getStage: () => number; onReady: (info: SceneInfo) => void; photo: string },
+  opts: {
+    getStage: () => number;
+    onReady: (info: SceneInfo) => void;
+    onFrame: (frame: PortraitFrame) => void;
+    photo: string;
+  },
 ) {
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const small = matchMedia("(max-width: 900px)").matches;
@@ -116,13 +137,18 @@ export function createScene(
     uPR: { value: renderer.getPixelRatio() },
     uMotion: { value: reduceMotion ? 0 : 1 },
     uMouseOn: { value: 0 },
+    uPhoto: { value: 0 },
     uMouse: { value: new THREE.Vector3(99, 99, 0) },
   };
 
   let points: THREE.Points | null = null;
+  // The portrait's half-size in world units (set once the photo is read), for placing the real photo.
+  const half = { w: 0, h: 0 };
   let disposed = false;
-  portraitFromImage(opts.photo, small ? 0.5 : 0.85).then(({ positions, colors, count }) => {
+  portraitFromImage(opts.photo, small ? 0.5 : 0.85).then(({ positions, colors, count, halfWidth, halfHeight }) => {
     if (disposed) return;
+    half.w = halfWidth;
+    half.h = halfHeight;
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geo.setAttribute("aColor", new THREE.BufferAttribute(colors, 3));
@@ -236,8 +262,11 @@ export function createScene(
         spin += (home - spin) * 0.04 * (1 - spinW);
       }
     }
-    const leanY = reduceMotion ? 0 : ndc.x * 0.35;
-    const leanX = reduceMotion ? 0 : -ndc.y * 0.2;
+    // The real photo is flat: hold the portrait still while it shows, so they line up.
+    const photo = photoAmount(stage, uniforms.uIntro.value);
+    uniforms.uPhoto.value = photo;
+    const leanY = reduceMotion ? 0 : ndc.x * 0.35 * (1 - photo);
+    const leanX = reduceMotion ? 0 : -ndc.y * 0.2 * (1 - photo);
     group.rotation.y += (spin + leanY - group.rotation.y) * 0.08;
     group.rotation.x += (leanX + (stage > 0.5 && stage < 5.5 ? 0.12 : 0) - group.rotation.x) * 0.06;
 
@@ -248,6 +277,18 @@ export function createScene(
     uniforms.uMouseOn.value += (active - uniforms.uMouseOn.value) * 0.08;
 
     renderer.render(scene, camera);
+
+    // Project the portrait's corners to the screen for the photo overlay.
+    if (half.w) {
+      group.updateMatrixWorld();
+      const a = new THREE.Vector3(-half.w, half.h, PHOTO_DEPTH).applyMatrix4(group.matrixWorld).project(camera);
+      const b = new THREE.Vector3(half.w, -half.h, PHOTO_DEPTH).applyMatrix4(group.matrixWorld).project(camera);
+      const W = host.clientWidth;
+      const H = host.clientHeight;
+      const left = ((a.x + 1) / 2) * W;
+      const top = ((1 - a.y) / 2) * H;
+      opts.onFrame({ left, top, width: ((b.x + 1) / 2) * W - left, height: ((1 - b.y) / 2) * H - top, photo });
+    }
   };
   tick();
 
