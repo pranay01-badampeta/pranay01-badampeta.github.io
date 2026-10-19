@@ -1,0 +1,126 @@
+@import "tailwindcss";
+@import "@fontsource-variable/syne";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+@theme {
+  --color-bg: #050505;
+  --color-ink: #eee9e2;
+  --color-muted: #8c857d;
+  --color-line: rgb(238 233 226 / 0.1);
+  --color-accent: #ff6b35;
+  --color-violet: #9b7bff;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne Variable", "Inter Variable", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    /* No body background: it would paint over the 3D layer, which sits below the page. */
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@utility shell {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 640px) {
+    padding-inline: 2.5rem;
+  }
+}
+
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@utility glass {
+  border: 1px solid var(--color-line);
+  background: rgb(5 5 5 / 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 1.5rem;
+}
+
+@utility pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-ink);
+}
+
+@utility cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  padding: 0.85rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: transform 0.25s, background 0.25s, border-color 0.25s, color 0.25s;
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@utility cta-solid {
+  background: var(--color-accent);
+  color: #120802;
+  &:hover {
+    background: #ff8a5c;
+  }
+}
+
+@utility cta-line {
+  border: 1px solid var(--color-line);
+  background: rgb(5 5 5 / 0.4);
+  backdrop-filter: blur(8px);
+  &:hover {
+    border-color: rgb(238 233 226 / 0.35);
+  }
+}
+
+/* Text that inverts whatever particles are behind it. */
+.blend {
+  mix-blend-mode: difference;
+  color: #fff;
+}
+
+.gradient-text {
+  background: linear-gradient(100deg, #ff6b35, #ff4d8d 45%, #9b7bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
