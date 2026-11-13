@@ -75,12 +75,12 @@ export default function App() {
             <div className="hero-fade label hidden max-w-[14rem] leading-relaxed sm:block">
               <span className="text-ink">{PROFILE.role}</span>
               <br />
-              Woxsen University · B.Tech CSE
+              {PROFILE.school}
             </div>
             <div className="hero-fade label hidden text-right leading-relaxed sm:block">
               IEEE CICT 2025 author
               <br />
-              NASA Space Apps 2024
+              <span className="text-accent">Alternance · from Mar 2027</span>
             </div>
           </div>
 
@@ -184,6 +184,13 @@ export default function App() {
                   <span key={t} className="pill">{t}</span>
                 ))}
               </div>
+              <div className="mt-8 flex flex-wrap gap-3" data-reveal>
+                {research.links?.map((l, i) => (
+                  <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className={`cta ${i === 0 ? "cta-solid" : "cta-line"}`}>
+                    {l.label} <ArrowUpRight className="size-4" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -249,6 +256,11 @@ export default function App() {
                       <span key={t} className="pill">{t}</span>
                     ))}
                   </div>
+                  {p.links?.map((l) => (
+                    <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 self-start font-mono text-xs uppercase tracking-widest text-accent hover:text-ink">
+                      {l.label} on GitHub <ArrowUpRight className="size-3.5" />
+                    </a>
+                  ))}
                 </article>
               ))}
             </div>
@@ -319,7 +331,8 @@ export default function App() {
                 <br />
                 something
               </h2>
-              <div className="mt-10 flex flex-wrap justify-center gap-3" data-reveal>
+              <p className="mt-8 text-muted" data-reveal>{PROFILE.availability}</p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3" data-reveal>
                 <a href={`mailto:${PROFILE.email}`} className="cta cta-solid">
                   <Mail className="size-4" /> {PROFILE.email}
                 </a>

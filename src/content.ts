@@ -6,14 +6,16 @@ export const PROFILE = {
   role: "AI & Full-Stack Developer",
   tagline: "I build machine-learning models and the web apps that put them in people's hands.",
   email: "pranaybadampeta@gmail.com",
-  linkedin: "https://www.linkedin.com/in/pranay-badampeta",
+  linkedin: "https://www.linkedin.com/in/pranay-badampeta-b3139025b",
   github: "https://github.com/pranay01-badampeta",
   resume: "Pranay-Badampeta-Resume.pdf",
   photo: "media/pranay.webp",
+  school: "MSc AI & Big Data · Epitech Paris",
+  availability: "Open to an alternance in Paris from March/April 2027",
 };
 
 export const ABOUT = [
-  "I'm a Computer Science and Engineering graduate from Woxsen University, Hyderabad. I work where machine learning meets real products: training models in Python, then shipping them behind clean, fast interfaces.",
+  "I'm a first-year MSc student in Artificial Intelligence and Big Data at Epitech Paris, after a B.Tech in Computer Science and Engineering at Woxsen University, Hyderabad. I work where machine learning meets real products: training models in Python, then shipping them behind clean, fast interfaces. I'm looking for an alternance in machine learning, AI engineering or data science from March/April 2027.",
   "My research on detecting solar-panel defects with CNNs was published at IEEE CICT 2025, and I built Cuisine.AI, a food-safety and stock app for restaurants that reads supplier invoices with AI.",
 ];
 
@@ -27,6 +29,17 @@ export const STATS = [
 export type Job = { role: string; org: string; place: string; when: string; points: string[] };
 
 export const EXPERIENCE: Job[] = [
+  {
+    role: "Associate (Intern), Full-Stack ML Development",
+    org: "MS Technologies",
+    place: "Hyderabad · Hybrid",
+    when: "Feb 2026 – Aug 2026",
+    points: [
+      "Developed frontend and backend components for machine learning projects.",
+      "Built React.js interfaces that let users work with ML model outputs.",
+      "Developed REST APIs in Python (Flask) and Node.js to serve trained models.",
+    ],
+  },
   {
     role: "Space Internship Program",
     org: "AGNIRVA",
@@ -43,16 +56,6 @@ export const EXPERIENCE: Job[] = [
       "Developed responsive web applications with React.js and reusable components built on hooks.",
       "Integrated REST APIs with Axios and Fetch, managing state with useState and useEffect.",
       "Improved UI performance, fixed frontend bugs and collaborated through Git.",
-    ],
-  },
-  {
-    role: "Social Internship",
-    org: "Vishwa Bharathi High School",
-    place: "Zaheerabad",
-    when: "Jun 2023 – Aug 2023",
-    points: [
-      "Analysed internet usage on Android smartphones: app usage, screen time and data consumption.",
-      "Presented the findings to students and staff to promote safe, responsible internet use.",
     ],
   },
 ];
@@ -95,6 +98,10 @@ export const PROJECTS: Project[] = [
       "Deployed behind a web interface for real-time monitoring and maintenance decisions.",
     ],
     tags: ["CNN", "Random Forest", "SVM", "IoT", "Python"],
+    links: [
+      { label: "Read the paper", href: "https://ieeexplore.ieee.org/document/11399178" },
+      { label: "Code", href: "https://github.com/pranay01-badampeta/solar-pv-defect-detection" },
+    ],
     badge: "IEEE CICT 2025",
   },
   {
@@ -106,6 +113,7 @@ export const PROJECTS: Project[] = [
       "Evaluated with RMSE and MAE; trends and predictions visualised with Matplotlib.",
     ],
     tags: ["LSTM", "Linear Regression", "Pandas", "Matplotlib"],
+    links: [{ label: "Code", href: "https://github.com/pranay01-badampeta/stock-price-prediction" }],
   },
   {
     title: "Credit Card Fraud Detection",
@@ -116,6 +124,7 @@ export const PROJECTS: Project[] = [
       "Class imbalance handled with SMOTE; judged on precision, recall, F1 and the confusion matrix.",
     ],
     tags: ["XGBoost", "SMOTE", "Scikit-learn"],
+    links: [{ label: "Code", href: "https://github.com/pranay01-badampeta/credit-card-fraud-detection" }],
   },
   {
     title: "Digital Signature System",
@@ -126,6 +135,7 @@ export const PROJECTS: Project[] = [
       "Guarantees data integrity and authenticates the sender.",
     ],
     tags: ["SHA-256", "RSA", "Python"],
+    links: [{ label: "Code", href: "https://github.com/pranay01-badampeta/digital-signature-hashing" }],
   },
 ];
 
@@ -142,11 +152,12 @@ export const SKILLS: { group: string; items: string[] }[] = [
   { group: "Languages", items: ["Python", "Java", "SQL", "JavaScript", "TypeScript"] },
   { group: "Machine learning", items: ["PyTorch", "TensorFlow", "Scikit-learn", "OpenCV", "YOLO", "XGBoost"] },
   { group: "Data", items: ["NumPy", "Pandas", "Matplotlib", "MySQL", "Jupyter"] },
-  { group: "Web", items: ["React", "Next.js", "Tailwind CSS", "REST APIs", "Axios"] },
+  { group: "Web", items: ["React", "Next.js", "Node.js", "Flask", "Tailwind CSS", "REST APIs"] },
   { group: "Tools", items: ["Git", "GitHub", "Render", "Stripe"] },
 ];
 
 export const EDUCATION = [
+  { school: "Epitech, Paris", degree: "MSc, Artificial Intelligence and Big Data", when: "2026 – 2028", score: "Ongoing" },
   { school: "Woxsen University, Hyderabad", degree: "B.Tech, Computer Science and Engineering", when: "2021 – 2025", score: "65%" },
   { school: "Sri Gayatri Educational Institutions, Hyderabad", degree: "Intermediate (MPC)", when: "2019 – 2021", score: "89%" },
   { school: "Aruna High School, Hyderabad", degree: "Matriculation", when: "2009 – 2019", score: "88%" },
